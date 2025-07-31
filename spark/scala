@@ -1,0 +1,548 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPDA3wfrNS5mi0BherwsojF",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/DileepNalle78/pyspark__DileepNalle/blob/main/spark/scala\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 2,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "hsaYpPt7oY6u",
+        "outputId": "a77a2148-120e-4c51-9127-cf58ae8b1d99"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "PRETTY_NAME=\"Ubuntu 22.04.4 LTS\"\n",
+            "NAME=\"Ubuntu\"\n",
+            "VERSION_ID=\"22.04\"\n",
+            "VERSION=\"22.04.4 LTS (Jammy Jellyfish)\"\n",
+            "VERSION_CODENAME=jammy\n",
+            "ID=ubuntu\n",
+            "ID_LIKE=debian\n",
+            "HOME_URL=\"https://www.ubuntu.com/\"\n",
+            "SUPPORT_URL=\"https://help.ubuntu.com/\"\n",
+            "BUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\n",
+            "PRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\n",
+            "UBUNTU_CODENAME=jammy\n"
+          ]
+        }
+      ],
+      "source": [
+        "!cat /etc/os-release"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!apt update"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "xPD9Vsrao0oY",
+        "outputId": "0d4d07fe-4985-4659-a481-e2059ce6c8a1"
+      },
+      "execution_count": 3,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Get:1 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]\n",
+            "Hit:2 https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64  InRelease\n",
+            "Get:3 https://cloud.r-project.org/bin/linux/ubuntu jammy-cran40/ InRelease [3,632 B]\n",
+            "Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease\n",
+            "Get:5 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]\n",
+            "Get:6 https://r2u.stat.illinois.edu/ubuntu jammy InRelease [6,555 B]\n",
+            "Get:7 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]\n",
+            "Hit:8 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu jammy InRelease\n",
+            "Get:9 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [5,094 kB]\n",
+            "Hit:10 https://ppa.launchpadcontent.net/graphics-drivers/ppa/ubuntu jammy InRelease\n",
+            "Get:11 https://r2u.stat.illinois.edu/ubuntu jammy/main all Packages [9,154 kB]\n",
+            "Get:12 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [3,519 kB]\n",
+            "Hit:13 https://ppa.launchpadcontent.net/ubuntugis/ppa/ubuntu jammy InRelease\n",
+            "Get:14 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1,270 kB]\n",
+            "Get:15 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [3,204 kB]\n",
+            "Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [5,290 kB]\n",
+            "Get:17 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1,575 kB]\n",
+            "Get:18 https://r2u.stat.illinois.edu/ubuntu jammy/main amd64 Packages [2,772 kB]\n",
+            "Fetched 32.3 MB in 2s (15.8 MB/s)\n",
+            "Reading package lists... Done\n",
+            "Building dependency tree... Done\n",
+            "Reading state information... Done\n",
+            "36 packages can be upgraded. Run 'apt list --upgradable' to see them.\n",
+            "\u001b[1;33mW: \u001b[0mSkipping acquire of configured file 'main/source/Sources' as repository 'https://r2u.stat.illinois.edu/ubuntu jammy InRelease' does not seem to provide it (sources.list entry misspelt?)\u001b[0m\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!apt-get install openjdk-8-jdk-headless -qq > /dev/null"
+      ],
+      "metadata": {
+        "id": "1_xkqhp5o-HV"
+      },
+      "execution_count": 5,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!java -version"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "bearDCtZtoGC",
+        "outputId": "8fe03482-7157-4cf7-e81f-f4892eec8894"
+      },
+      "execution_count": 6,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "openjdk version \"11.0.28\" 2025-07-15\n",
+            "OpenJDK Runtime Environment (build 11.0.28+6-post-Ubuntu-1ubuntu122.04.1)\n",
+            "OpenJDK 64-Bit Server VM (build 11.0.28+6-post-Ubuntu-1ubuntu122.04.1, mixed mode, sharing)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!javac -version"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "ChWunXzJtsxn",
+        "outputId": "9f6591f0-31cc-460f-806e-1a655d9921c2"
+      },
+      "execution_count": 7,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "javac 11.0.28\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!wget -q https://archive.apache.org/dist/spark/spark-3.4.1/spark-3.4.1-bin-hadoop3.tgz"
+      ],
+      "metadata": {
+        "id": "E1BwWt4vtyVy"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!tar xf spark-3.4.1-bin-hadoop3.tgz"
+      ],
+      "metadata": {
+        "id": "V-NNq6BWt2rg"
+      },
+      "execution_count": 9,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!wget -q https://github.com/scala/scala/releases/download/v2.12.18/scala-2.12.18.deb"
+      ],
+      "metadata": {
+        "id": "eU_dzbQxv8GI"
+      },
+      "execution_count": 10,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!dpkg -i scala-2.12.18.deb"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "P5txNF8dwIan",
+        "outputId": "a7b3b81b-ca1b-49db-852a-e0ed27f7d6ae"
+      },
+      "execution_count": 11,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Selecting previously unselected package scala.\n",
+            "(Reading database ... 126633 files and directories currently installed.)\n",
+            "Preparing to unpack scala-2.12.18.deb ...\n",
+            "Unpacking scala (2.12.18-400) ...\n",
+            "Setting up scala (2.12.18-400) ...\n",
+            "Creating system group: scala\n",
+            "Creating system user: scala in scala with scala daemon-user and shell /bin/false\n",
+            "Processing triggers for man-db (2.10.2-1) ...\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!ls /usr/lib/jvm/java-1.11.0-openjdk-amd64/\n",
+        "!ls /content/spark-3.4.1-bin-hadoop3/\n",
+        "!ls /content/scala-2.12.18.deb"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "n2GpK-QDwqBi",
+        "outputId": "e53009a8-01bf-4eaf-8fbf-367684f1c669"
+      },
+      "execution_count": 12,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "bin  conf  docs  include  jmods  legal\tlib  man  release\n",
+            "bin   data\tjars\t    LICENSE   NOTICE  R\t\t RELEASE  yarn\n",
+            "conf  examples\tkubernetes  licenses  python  README.md  sbin\n",
+            "/content/scala-2.12.18.deb\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "# set envirment variable\n",
+        "import os\n",
+        "os.environ[\"JAVA_HOME\"] = \"/usr/lib/jvm/java-1.11.0-openjdk-amd64\"\n",
+        "os.environ[\"SPARK_HOME\"] = \"/content/spark-3.4.1-bin-hadoop3\""
+      ],
+      "metadata": {
+        "id": "F7OXwmfVxKLx"
+      },
+      "execution_count": 14,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!echo $JAVA_HOME"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NQTnsSlE0A49",
+        "outputId": "6e4f9337-5166-48b8-9da2-8b32c6dc2534"
+      },
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "/usr/lib/jvm/java-1.11.0-openjdk-amd64\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!echo $SPARK_HOME"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "muRaxxZm0A66",
+        "outputId": "bc60eec6-7ec9-4e5f-c897-d50dc89b939d"
+      },
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "/content/spark-3.4.1-bin-hadoop3\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install -q findspark"
+      ],
+      "metadata": {
+        "id": "65vjnqU90A9L"
+      },
+      "execution_count": 17,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import findspark\n",
+        "findspark.init()\n",
+        "\n",
+        "from pyspark.sql import SparkSession\n",
+        "spark = SparkSession.builder\\\n",
+        "        .master(\"local\")\\\n",
+        "        .appName(\"Colab\")\\\n",
+        "        .config('spark.ui.port', '4050')\\\n",
+        "        .getOrCreate()\n",
+        "\n",
+        "spark"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 219
+        },
+        "id": "HEdYXa-40A_1",
+        "outputId": "97059a1c-d42a-4b3b-fdd0-c74cd3bb870b"
+      },
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<pyspark.sql.session.SparkSession at 0x7a4873de6a90>"
+            ],
+            "text/html": [
+              "\n",
+              "            <div>\n",
+              "                <p><b>SparkSession - in-memory</b></p>\n",
+              "                \n",
+              "        <div>\n",
+              "            <p><b>SparkContext</b></p>\n",
+              "\n",
+              "            <p><a href=\"http://43a3f04c4041:4050\">Spark UI</a></p>\n",
+              "\n",
+              "            <dl>\n",
+              "              <dt>Version</dt>\n",
+              "                <dd><code>v3.4.1</code></dd>\n",
+              "              <dt>Master</dt>\n",
+              "                <dd><code>local</code></dd>\n",
+              "              <dt>AppName</dt>\n",
+              "                <dd><code>Colab</code></dd>\n",
+              "            </dl>\n",
+              "        </div>\n",
+              "        \n",
+              "            </div>\n",
+              "        "
+            ]
+          },
+          "metadata": {},
+          "execution_count": 18
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile HelloWorld.scala\n",
+        "object HelloWorld{\n",
+        "    def main(args: Array[String]): Unit = {\n",
+        "        println(\"welcome from scala!\")\n",
+        "    }\n",
+        "}"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "7LXt2PAx0BCl",
+        "outputId": "e8fc663b-903e-4d95-95d2-31bddc7d8b98"
+      },
+      "execution_count": 22,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Writing HelloWorld.scala\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!scalac HelloWorld.scala"
+      ],
+      "metadata": {
+        "id": "ovKXyWly0BFE"
+      },
+      "execution_count": 23,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!scala HelloWorld"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "C39AmZ4o0BHj",
+        "outputId": "62c3519e-d461-4ee6-e90d-e027d2a1d392"
+      },
+      "execution_count": 24,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "welcome from scala!\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "%%writefile completeScalademo.scala\n",
+        "object completeScalademo {\n",
+        "  def main(args: Array[String]): Unit = {\n",
+        "\n",
+        "\n",
+        "    //step 1: Basic Syntax and variable\n",
+        "    val language: String = \"Scala\"\n",
+        "\n",
+        "    var varsion: Double = 2.12\n",
+        "    println(s\"step 1: Welcome to $language with version $varsion\")\n",
+        "  }\n",
+        "}"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Pa0vbWds0BJ3",
+        "outputId": "bf9cd1a3-baec-4d7d-e495-d34eae65a9a4"
+      },
+      "execution_count": 39,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Overwriting completeScalademo.scala\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!scalac completeScalademo.scala"
+      ],
+      "metadata": {
+        "id": "fiKC06Ma0BMH"
+      },
+      "execution_count": 40,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!scala completeScalademo"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "oWJ7dWMh0BO5",
+        "outputId": "005cc6e7-0f54-46ae-a0b4-d1aba9b6b2ac"
+      },
+      "execution_count": 41,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "step 1: Welcome to Scala with version 2.12\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "73oDystL0BRG"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "q4jtjSxa0BT2"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "ox1cYEYp0BWc"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
